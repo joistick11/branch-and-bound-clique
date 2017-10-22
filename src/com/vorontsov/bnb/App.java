@@ -1,19 +1,17 @@
 package com.vorontsov.bnb;
 
-import com.vorontsov.bnb.algorithm.BasicBranchAndBound;
-import com.vorontsov.bnb.model.Graph;
-import com.vorontsov.bnb.model.Node;
-import com.vorontsov.bnb.model.Parser;
+import com.vorontsov.bnb.Graph.Node;
 
 import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        Graph graph = Parser.graphFromFile("P:\\github\\branch-and-bound-clique\\C125.9.clq.txt");
+        long start = System.currentTimeMillis();
+        Graph graph = Parser.graphFromFile("P:\\github\\branch-and-bound-clique\\graphs\\brock200_2.clq.txt");
 
-        BasicBranchAndBound branchAndBound = new BasicBranchAndBound(graph);
-        List<Node> clique = branchAndBound.findMaxQlique();
-
-        System.out.print(clique);
+        BrandAndBoundWithColorsHeuristics brandAndBoundWithColorsHeuristics = new BrandAndBoundWithColorsHeuristics(graph);
+        List<Node> clique = brandAndBoundWithColorsHeuristics.findMaxClique();
+        System.out.println((System.currentTimeMillis() - start) / 1000.0);
+        System.out.print(clique.size());
     }
 }

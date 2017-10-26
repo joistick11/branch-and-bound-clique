@@ -23,13 +23,13 @@ public class BrandAndBoundWithColorsHeuristics {
         sortByColor(nodes, colors);
 
         branchAndBound(nodes, new LinkedList<>(), colors);
-        return maxClique;
+        return getMaxClique();
     }
 
     public void branchAndBound(List<Node> candidates, List<Node> clique, Map<Integer, Integer> colors) {
         for (Node c : candidates) {
             // we can predict if node cannot expand current max clique
-            if (clique.size() + colors.get(c.getIndex()) <= maxClique.size()) { // |Q|+|R| > |Qmax|
+            if (clique.size() + colors.get(c.getIndex()) <= getMaxClique().size()) { // |Q|+|R| > |Qmax|
                 // and as nodes are sorted by color number, we don't need to verify further nodes
                 // so just exit this branch
                 return;
@@ -49,7 +49,7 @@ public class BrandAndBoundWithColorsHeuristics {
                 Map<Integer, Integer> candidateColors = findChromaticNumber(currentCandidates);
                 sortByColor(currentCandidates, candidateColors);
                 branchAndBound(currentCandidates, currentClique, candidateColors);
-            } else if (currentClique.size() > maxClique.size()) {
+            } else if (currentClique.size() > getMaxClique().size()) {
                 maxClique = currentClique;
             }
         }
@@ -102,5 +102,9 @@ public class BrandAndBoundWithColorsHeuristics {
         }
 
         return colors;
+    }
+
+    public List<Node> getMaxClique() {
+        return maxClique;
     }
 }

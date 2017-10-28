@@ -4,31 +4,38 @@ import com.google.common.util.concurrent.SimpleTimeLimiter;
 import com.vorontsov.bnb.Graph.Node;
 
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
+
+import static java.lang.Integer.parseInt;
 
 public class App {
     public static void main(String[] args) throws InterruptedException {
-        String file = "P:\\github\\branch-and-bound-clique\\graphs\\brock200_4.clq.txt";
+        if (args.length == 0) {
+            throw new RuntimeException("No file provided!");
+        }
+
+        String file = args[0];
 
         CliqueFindingJob cliqueFindingJob = new CliqueFindingJob(file);
         SimpleTimeLimiter simpleTimeLimiter = SimpleTimeLimiter.create(Executors.newSingleThreadExecutor());
 
-        int timeLimit = 3600;
+        int timeLimit = args.length > 1 ? parseInt(args[1]) : 3600;
 
         try {
             long start = System.currentTimeMillis();
-            simpleTimeLimiter.runWithTimeout(cliqueFindingJob, timeLimit, TimeUnit.SECONDS);
-            System.out.println((System.currentTimeMillis() - start) / 1000.0);
+            List<Node> clique = simpleTimeLimiter.callWithTimeout(cliqueFindingJob, timeLimit, TimeUnit.SECONDS);
+            System.out.println((System.currentTimeMillis() - start) / 1000.0 + " " + clique.size() + " "
+                + clique);
         } catch (TimeoutException e) {
             System.out.println("0 " + cliqueFindingJob.algorithm.getMaxClique());
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
 
         System.exit(0);
     }
 
-    private static class CliqueFindingJob implements Runnable {
+    private static class CliqueFindingJob implements Callable<List<Node>> {
         public BrandAndBoundWithColorsHeuristics algorithm;
         private String filePath;
 
@@ -37,12 +44,10 @@ public class App {
         }
 
         @Override
-        public void run() {
+        public List<Node> call() throws Exception {
             Graph graph = Parser.graphFromFile(filePath);
             algorithm = new BrandAndBoundWithColorsHeuristics(graph);
-            List<Node> clique = algorithm.findMaxClique();
-
-            System.out.println(clique.size() + " " + clique);
+            return algorithm.findMaxClique();
         }
     }
 }

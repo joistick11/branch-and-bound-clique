@@ -27,7 +27,8 @@ public class App {
             System.out.println((System.currentTimeMillis() - start) / 1000.0 + " " + clique.size() + " "
                 + clique);
         } catch (TimeoutException e) {
-            System.out.println("0 " + cliqueFindingJob.algorithm.getMaxClique());
+            System.out.println(cliqueFindingJob.algorithm.getMaxClique().size() + " "
+                    + cliqueFindingJob.algorithm.getMaxClique() + " timeout!");
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
@@ -35,7 +36,7 @@ public class App {
         System.exit(0);
     }
 
-    private static class CliqueFindingJob implements Callable<List<Node>> {
+    public static class CliqueFindingJob implements Callable<List<Node>> {
         public BrandAndBoundWithColorsHeuristics algorithm;
         private String filePath;
 

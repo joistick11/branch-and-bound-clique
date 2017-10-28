@@ -67,7 +67,10 @@ public class BrandAndBoundWithColorsHeuristics {
      * @param nodes collection of nodes to find chromatic number for
      * @return map contains node_index -> color_number
      */
-    private static Map<Integer, Integer> findChromaticNumber(Collection<Node> nodes) {
+    private static Map<Integer, Integer> findChromaticNumber(List<Node> nodes) {
+        // It is better for us to have small color for nodes with a little number of neighbours
+        // In this case using |Q|+|R| > |Qmax| we will reject nodes with big number of neighbours
+        nodes.sort(Comparator.<Node>comparingInt(elem -> elem.getNeighbours().size()).reversed());
         int maxColor = 0;
         // contains sets with vertexes of the same color. Key - color number, value - set of nodes of this color
         Map<Integer, Set<Node>> colorsSets = new HashMap<>();

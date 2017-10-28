@@ -10,7 +10,7 @@ import java.util.concurrent.TimeoutException;
 
 public class App {
     public static void main(String[] args) throws InterruptedException {
-        String file = "P:\\github\\branch-and-bound-clique\\graphs\\san400_0.7_1.clq.txt";
+        String file = "P:\\github\\branch-and-bound-clique\\graphs\\brock200_4.clq.txt";
 
         CliqueFindingJob cliqueFindingJob = new CliqueFindingJob(file);
         SimpleTimeLimiter simpleTimeLimiter = SimpleTimeLimiter.create(Executors.newSingleThreadExecutor());
